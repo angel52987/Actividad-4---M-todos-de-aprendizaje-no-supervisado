@@ -1,0 +1,39 @@
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+
+# Crear el dataset
+data = {
+    "Estacion": ['A', 'B', 'H', 'J', 'K'],
+    "Hora Pico AM (Entrada)": [35555, 35555, 35555, 35555, 35555],
+    "Hora Pico AM (Salida)": [17000, 17000, 17000, 17000, 17000],
+    "Hora Pico PM (Entrada)": [25000, 25000, 25000, 25000, 25000],
+    "Hora Pico PM (Salida)": [40376, 40376, 40376, 40376, 40376],
+    "Número de Pasajeros Diario": [65376, 65376, 65376, 65376, 65376],
+    "Tarifa Promedio (pesos)": [3200, 3200, 3200, 3200, 3200]
+}
+df = pd.DataFrame(data)
+
+# Seleccionar las columnas relevantes para el clustering
+features = df.drop('Estacion', axis=1)
+
+
+# Normalizar los datos
+scaler = StandardScaler()
+scaled_features = scaler.fit_transform(features)
+
+# Aplicar K-Means con k=3 (puedes ajustar k según tu necesidad)
+kmeans = KMeans(n_clusters=3, random_state=42)
+df['Cluster'] = kmeans.fit_predict(scaled_features)
+
+
+# Mostrar resultados
+print(df)
+
+# Visualizar los clusters
+plt.scatter(df['Estacion'], df['Número de Pasajeros Diario'], c=df['Cluster'], cmap='viridis')
+plt.title('Clustering de Estaciones del Metro de Medellín')
+plt.xlabel('Estacion')
+plt.ylabel('Número de Pasajeros Diario')
+plt.show()
